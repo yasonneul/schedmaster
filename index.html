@@ -15,6 +15,162 @@
     .glass { backdrop-filter: blur(8px); background: rgba(255,255,255,0.65); }
     .scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
     .scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+    /* Ensure subject blocks are above grid lines */
+    .subject-block {
+    position: absolute;
+    z-index: 10; /* on top of grid lines */
+    text-align: center;
+    margin: 2px 0;  /* small vertical gap */
+    padding: 4px 6px; /* more padding for easier reading */
+    border-radius: 1rem; /* make it rounder */
+    font-size: 0.875rem; /* slightly bigger */
+  }
+
+
+    /* Keep small padding so grid lines are visible around the block */
+    [data-col] {
+      position: relative;
+      padding: 0.5px;
+      overflow: visible; /* Add this */
+    }
+
+    .day-separator {
+  border-right: 1px solid rgba(156,163,175,0.5); /* light gray */
+  position: relative;
+  height: 100%;
+}
+
+    /* Horizontal lines for each hour */
+    .timetable-row {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      border-bottom: 3px solid rgba(156,163,175,0.3); /* light gray line */
+}
+
+    /* Vertical lines between days */
+    [data-col]:not(:last-child) {
+      border-right: 3px solid rgba(156,163,175,0.3); /* light gray */
+}
+
+/* --- Mobile Timetable improvements --- */
+@media (max-width: 768px) {
+  #timetable {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Grid min width so days don’t squash too much */
+  #timetable > div {
+    min-width: 550px; /* 5 days + time column */
+  }
+
+  /* Slightly smaller blocks on phones */
+  .subject-block {
+    font-size: 0.75rem; /* ~12px */
+    padding: 2px 4px;
+    border-radius: 0.75rem;
+  }
+}
+
+/* --- Extra small devices (≤ 400px) --- */
+@media (max-width: 400px) {
+  html { font-size: 13px; }
+  header h1 { font-size: 0.85rem; }
+  .tab-panel { padding: 0.25rem; }
+
+  #timetable > div {
+    min-width: 480px; /* narrower timetable */
+  }
+
+  .subject-block {
+    font-size: 0.7rem;
+    padding: 2px;
+  }
+}
+
+/* --- Mobile Nav tweaks --- */
+@media (max-width: 640px) {
+  #mobileBottomNav button {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.25rem;
+  }
+}
+
+    /* Mobile adjustments */
+  @media (max-width: 640px) {
+    input, select, textarea, button {
+      width: 100%;
+    }
+  }
+  html { font-size: 15px; }
+  body { font-size: 15px; }
+
+  header h1 { font-size: 1rem; }
+  .tab-panel { padding: 0.5rem; }
+
+  input, select, textarea, button { font-size: 0.9rem; }
+
+  /* Tables scroll horizontally */
+  #timetable, #teacher-table {
+    max-height: 640px;
+    overflow-y: auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  #timetable div[data-col] {
+    position: relative;
+    min-height: 64px;
+  }
+
+  
+  /* Mobile Bottom Nav */
+  #mobileBottomNav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    border-top: 1px solid #16a34a;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: env(safe-area-inset-bottom, 0.5rem) 0;
+    z-index: 50;
+    box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
+  }
+
+  #mobileBottomNav button {
+    flex: 1;
+    text-align: center;
+    padding: 0.5rem 0.25rem;
+    font-size: 0.875rem;
+    background: none;
+    border: none;
+    color: #16a34a;
+    font-weight: 500;
+  }
+
+  #mobileBottomNav button.active {
+    color: white;
+    background-color: #16a34a;
+    border-radius: 0.5rem;
+  }
+
+/* Very small devices */
+@media (max-width: 375px) {
+  html { font-size: 13px; }
+  header h1 { font-size: 0.9rem; }
+
+#timetable div[data-col] div {
+  font-size: 0.7rem;
+  padding: 0.25rem;
+}
+
+}
+
+
+
   </style>
 </head>
 <body class="bg-green-50 text-green-800">
@@ -22,7 +178,9 @@
   <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="h-9 w-9 rounded-2xl bg-green-600 flex items-center justify-center text-white font-bold">FEU</div>
+         <div class="h-14 w-14 flex items-center justify-center">
+          <!--<img src="assets/FEU LOGO.png" class="h-12 w-12 sm:h-14 sm:w-14 object-contain"> [IF U WANT LOGO FOR FEU]-->
+          </div>
         <h1 class="text-lg sm:text-xl font-semibold">SchedMaster — Web & SMS</h1>
       </div>
       <nav class="hidden sm:flex items-center gap-2">
@@ -44,12 +202,11 @@
       </div>
     </div>
   </header>
-
   <!-- Main -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <!-- Hero -->
     <section class="mb-8">
-      <div class="rounded-3xl p-6 sm:p-8 bg-gradient-to-tr from-green-500 to-green-700 text-white shadow-lg">
+      <div class="rounded-3xl p-6 sm:p-8 bg-gradient-to-tr from-green-700 to-green-800 text-white shadow-lg">
         <h2 class="text-2xl FEU:text-3xl font-semibold">Inclusive class scheduling for every student</h2>
         <p class="mt-2 text-white/90 max-w-3xl">SchedMaster runs on the web and delivers weekly schedules via SMS for learners without internet access. Teachers create timetables; students check online or receive SMS updates automatically.</p>
         <div class="mt-4 flex flex-wrap gap-2">
@@ -80,7 +237,7 @@
                 <input id="sv-strand" placeholder="e.g., STEM, ABM" class="w-full rounded-xl border-slate-300 focus:ring-2 focus:ring-green-500"/>
                 <label class="text-sm font-medium">Section</label>
                 <input id="sv-section" placeholder="e.g., A, B" class="w-full rounded-xl border-slate-300 focus:ring-2 focus:ring-green-500"/>
-                <button id="sv-load" class="w-full mt-2 inline-flex items-center justify-center gap-2 rounded-xl bg-green-500 hover:bg-green-700 text-white px-4 py-2.5 font-medium">
+                <button id="sv-load" class="w-full mt-2 inline-flex items-center justify-center gap-2 rounded-xl bg-green-700 hover:bg-green-700 text-white px-4 py-2.5 font-medium">
                   Load Week
                 </button>
               </div>
@@ -89,7 +246,7 @@
               <p class="text-sm text-slate-600">Opt in to receive weekly schedules via SMS.</p>
               <div class="mt-3 space-y-3">
                 <input id="sv-phone" placeholder="e.g., 09XXXXXXXXX" class="w-full rounded-xl border-slate-300 focus:ring-2 focus:ring-green-500"/>
-                <button id="sv-sub" class="w-full rounded-xl bg-green-500 hover:bg-green-700 text-white px-4 py-2 font-medium">Subscribe via SMS</button>
+                <button id="sv-sub" class="w-full rounded-xl bg-green-700 hover:bg-green-700 text-white px-4 py-2 font-medium">Subscribe via SMS</button>
                 <p id="sv-sub-msg" class="text-xs text-slate-600"></p>
               </div>
             </div>
@@ -209,7 +366,9 @@
               <input id="sms-strand" placeholder="Strand" class="rounded-xl border-slate-300"/>
               <input id="sms-section" placeholder="Section" class="rounded-xl border-slate-300"/>
             </div>
-            <button id="sms-generate" class="mt-3 rounded-xl bg-gree-600 hover:bg-indigo-700 text-white px-4 py-2.5 font-medium">Generate SMS Text</button>
+            <button id="sms-generate" class="mt-3 rounded-xl bg-green-600 hover:bg-green-700 text-white px-4 py-2.5 font-medium">
+              Generate SMS Text
+            </button>
             <textarea id="sms-preview" rows="10" class="mt-3 w-full rounded-xl border-slate-300" placeholder="Generated SMS will appear here..."></textarea>
             <div class="mt-3 flex gap-2">
               <button id="sms-send" class="rounded-xl border px-3 py-2 text-sm hover:bg-slate-50">Simulate Send</button>
@@ -267,12 +426,18 @@
       settings: 'sm.settings' // {schoolName, smsSender}
     };
 
-    const days = ['Mon','Tue','Wed','Thu','Fri'];
+    const DAYS = ['Mon','Tue','Wed','Thu','Fri'];
 
-    function timeToMinutes(t){ const [h,m] = t.split(':').map(Number); return h*60+m; }
+    function to12Hour(timeStr) {
+      let [h, m] = timeStr.split(":").map(Number);
+      const ampm = h >= 12 ? "PM" : "AM";
+      h = h % 12 || 12; // convert 0 -> 12, 13 -> 1
+      return `${h}:${m.toString().padStart(2,"0")} ${ampm}`;
+    }
     function overlap(aStart,aEnd,bStart,bEnd){ return Math.max(aStart,bStart) < Math.min(aEnd,bEnd); }
+    function timeToMinutes(t){ const [h, m] = t.split(':').map(Number); return h*60+m; }
 
-    function cohortKey({grade, strand, section}){ return `${grade}|${(strand||'').trim().toUpperCase()}|${(section||'').trim().toUpperCase()}`; }
+    function cohortKey({grade, strand, section}){ return `${String(grade)}|${(strand||'').trim().toUpperCase()}|${(section||'').trim().toUpperCase()}`; }
 
     function fetchClasses(filter){
       const all = store.read(KEYS.classes, []);
@@ -281,17 +446,25 @@
       return all.filter(c => cohortKey(c) === key);
     }
 
+    function fetchClassesWithIndex(filter){
+      const all = store.read(KEYS.classes, []);
+      const key = cohortKey(filter);
+      return all.map((c, i)=>({ ...c, _i:i })).filter(c => cohortKey(c) === key);
+    }
+
     function addClass(entry){
       const list = store.read(KEYS.classes, []);
       list.push(entry);
       store.write(KEYS.classes, list);
     }
 
-    function removeClass(idx, filter){
-      const list = store.read(KEYS.classes, []);
-      const key = cohortKey(filter);
-      const kept = list.filter((c,i)=> !(cohortKey(c)===key && i===idx));
-      store.write(KEYS.classes, kept);
+    function normalizeCohort(obj){
+      return {
+        grade: String(obj.grade),
+        strand: (obj.strand||'').trim().toUpperCase(),
+        section: (obj.section||'').trim().toUpperCase(),
+        day: obj.day ? String(obj.day).trim().slice(0,3) : undefined
+      };
     }
 
     function conflictFor(entry){
@@ -302,95 +475,158 @@
       return found || null;
     }
 
-    function renderGrid(target, classes){
-      const byDay = Object.fromEntries(days.map(d=>[d, []]));
-      classes.forEach(c=>byDay[c.day].push(c));
-      days.forEach(d=>byDay[d].sort((a,b)=>timeToMinutes(a.start)-timeToMinutes(b.start)));
+    // ---------- Timetable Grid (Student) ----------
+    function renderGrid(target, classes) {
+  const grid = document.createElement('div');
 
-      const grid = document.createElement('div');
-      grid.className = 'min-w-[720px]';
-      grid.innerHTML = `
-        <div class="grid grid-cols-6 text-sm font-semibold text-slate-600">
-          <div class="p-2"></div>
-          ${days.map(d=>`<div class='p-2 text-center'>${d}</div>`).join('')}
+  grid.className = 'w-full overflow-x-auto min-w-[550px]';
+
+  grid.className = 'w-full overflow-x-auto';
+  
+  
+  grid.innerHTML = `
+    <!-- Header -->
+    <div class="grid grid-cols-6 text-sm font-semibold text-slate-600 min-w-[360px]">
+      <div></div>
+      ${DAYS.map(d => `<div class="p-1 text-center ${d !== 'Fri' ? 'day-separator' : ''}">${d}</div>`).join('')}
+    </div>
+
+    <!-- Hour rows -->
+    ${Array.from({ length: 10 }).map((_, i) => {
+      const hour = 7 + i;
+      return `
+        <div class="timetable-row min-h-[60px]">
+          <div class="p-1 text-xs text-slate-500">${to12Hour(hour + ":00")}</div>
+          ${DAYS.map(d => `<div class="p-0.5 relative" data-col="${d}" data-hour="${hour}"></div>`).join('')}
         </div>
-        ${Array.from({length:10}).map((_,i)=>{
-            const hour = 7+i; // 7:00 - 16:00 baseline
-            return `
-              <div class="grid grid-cols-6 border-t border-slate-200">
-                <div class="p-2 text-xs text-slate-500">${String(hour).padStart(2,'0')}:00</div>
-                ${days.map(d=>`<div class='p-2 min-h-[64px] space-y-2' data-col='${d}' data-hour='${hour}'></div>`).join('')}
-              </div>`
-        }).join('')}
+      `;
+    }).join('')}
+  `;
+
+  target.innerHTML = '';
+  target.appendChild(grid);
+
+  // Add classes
+  classes.forEach(c => {
+    const [startHour, startMin] = c.start.split(':').map(Number);
+    const [endHour, endMin] = c.end.split(':').map(Number);
+    const startCell = grid.querySelector(`[data-col='${c.day}'][data-hour='${startHour}']`);
+    if (!startCell) return;
+
+    const cellHeight = 60;
+    const startOffset = (startMin / 60) * cellHeight;
+    const durationHours = (endHour + endMin/60) - (startHour + startMin/60);
+    const blockHeight = Math.max(cellHeight * 0.5, durationHours * cellHeight);
+
+    const subj = document.createElement('div');
+    subj.className = 'absolute left-1 right-1 top-0 bg-green-700 text-white rounded-3xl px-2 py-1.5 text-sm font-semibold text-center flex items-center justify-center shadow border border-green-800 hover:scale-110 hover:shadow-3xl transition-transform transition-shadow duration-300 ease-in-out cursor-pointer';
+    subj.style.top = `${startOffset}px`;
+    subj.style.height = `${blockHeight}px`;
+    subj.innerText = c.subject;
+
+    // Hover popup
+const popup = document.createElement('div');
+popup.className = 'absolute top-0 bg-white text-green-700 border border-green-800 rounded shadow p-2 text-xs hidden z-50 w-48';
+popup.innerHTML = `
+  <div class="font-bold">${c.subject}</div>
+  <div>Time: ${to12Hour(c.start)} – ${to12Hour(c.end)}</div>
+  <div>Room: ${c.room || 'N/A'}</div>
+  <div>Teacher: ${c.teacher || 'N/A'}</div>
+`;
+
+// default → show popup on the right
+popup.style.left = "100%";
+popup.style.marginLeft = "0.25rem";
+
+// if Thursday or Friday → flip popup to the left
+if (c.day === "Thu" || c.day === "Fri") {
+  popup.style.left = "auto";
+  popup.style.right = "100%";
+  popup.style.marginLeft = "0";
+  popup.style.marginRight = "0.25rem";
+}
+
+subj.addEventListener('mouseenter', () => popup.classList.remove('hidden'));
+subj.addEventListener('mouseleave', () => popup.classList.add('hidden'));
+
+startCell.appendChild(subj);
+startCell.appendChild(popup);
+
+  });
+}
+
+
+
+    // ---------- Teacher Table ----------
+    function renderTeacherTable(target, listWithIndex, filter){
+      const rows = listWithIndex
+        .slice()
+        .sort((a,b)=> (DAYS.indexOf(a.day)-DAYS.indexOf(b.day)) || (timeToMinutes(a.start)-timeToMinutes(b.start)));
+
+      const empty = rows.length===0
+        ? `<div class="p-4 text-sm text-slate-500 border rounded-xl">No classes for G${filter.grade} ${filter.strand}-${filter.section}.</div>`
+        : '';
+
+      const table = document.createElement('div');
+      table.className = 'w-full overflow-x-auto';
+      table.innerHTML = `
+        ${empty}
+        ${rows.map((c, idx)=>`
+          <div class="grid grid-cols-12 items-center border rounded-xl mb-2">
+            <div class="col-span-3 px-3 py-2">
+              <div class="text-sm font-medium">${c.subject}</div>
+              <div class="text-xs text-slate-600">${c.teacher || ''}</div>
+            </div>
+            <div class="col-span-3 px-3 py-2 text-sm">${c.day} • ${to12Hour(c.start)}–${to12Hour(c.end)}</div>
+            <div class="col-span-3 px-3 py-2 text-sm">${c.room ? 'Room '+c.room : ''}</div>
+            <div class="col-span-2 px-3 py-2 text-xs text-slate-500">G${c.grade} ${c.strand}-${c.section}</div>
+            <div class="col-span-1 px-3 py-2 flex justify-end">
+              <button class="del-btn rounded-lg border px-2 py-1 text-xs hover:bg-rose-50 border-rose-200 text-rose-700" data-real="${c._i}">
+                Delete
+              </button>
+            </div>
+          </div>
+        `).join('')}
       `;
 
-      target.innerHTML='';
-      target.appendChild(grid);
-
-      // place class pills
-      classes.forEach(c=>{
-        const slotCols = $$("[data-col]", grid).filter(el=> el.getAttribute('data-col')===c.day);
-        const anchor = slotCols[0]; // place relative to day column
-        const pill = document.createElement('div');
-        pill.className = 'rounded-xl border border-slate-200 shadow-sm p-2 text-xs';
-        pill.innerHTML = `<div class='font-medium'>${c.subject} <span class='text-slate-500'>${c.room?('• '+c.room):''}</span></div>
-                          <div class='text-slate-600'>${c.start}–${c.end}${c.teacher?(' • '+c.teacher):''}</div>`;
-        anchor.parentElement.appendChild(pill); // simple stacking per day
-      });
-    }
-
-    function renderTeacherTable(target, classes, filter){
       target.innerHTML = '';
-      const table = document.createElement('table');
-      table.className = 'w-full text-sm';
-      table.innerHTML = `
-        <thead>
-          <tr class='text-left text-slate-600'>
-            <th class='py-2'>Day</th>
-            <th>Time</th>
-            <th>Subject</th>
-            <th>Room</th>
-            <th>Teacher</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody></tbody>`;
-      const tbody = $('tbody', table);
-      classes.forEach((c, idx)=>{
-        const tr = document.createElement('tr');
-        tr.className = 'border-t';
-        tr.innerHTML = `
-          <td class='py-2'>${c.day}</td>
-          <td>${c.start}–${c.end}</td>
-          <td>${c.subject}</td>
-          <td>${c.room||''}</td>
-          <td>${c.teacher||''}</td>
-          <td class='text-right'>
-            <button data-action='del' data-idx='${idx}' class='text-rose-600 hover:underline'>Delete</button>
-          </td>`;
-        tbody.appendChild(tr);
-      });
       target.appendChild(table);
 
-      // deletion
-      $$('button[data-action="del"]', target).forEach(btn=>{
+      // Wire delete with real index in full list
+      $$('.del-btn', target).forEach(btn=>{
         btn.addEventListener('click', ()=>{
-          removeClass(Number(btn.dataset.idx), filter);
-          loadTeacherView();
+          const real = Number(btn.dataset.real);
+          const all = store.read(KEYS.classes, []);
+          if (real>=0 && real<all.length) {
+            all.splice(real,1);
+            store.write(KEYS.classes, all);
+            loadTeacherView();
+            loadStudentView();
+          }
         });
       });
     }
 
+    // ---------- SMS ----------
     function classesToSms({grade, strand, section}, classes){
-      const s = store.read(KEYS.settings, {smsSender:'SchedMaster'});
-      let header = `Good Day! Here is your schedule for GRADE ${grade} ${strand?.toUpperCase()}-${section?.toUpperCase()}\n\n`;
-      const byDay = Object.fromEntries(days.map(d=>[d, []]));
+      const s = store.read(KEYS.settings, {schoolName:'', smsSender:'SchedMaster'});
+      const school = s.schoolName ? `${s.schoolName}\n` : '';
+      const header = `${school}Good day! Weekly schedule for G${grade} ${strand}-${section}:\n\n`;
+
+      // group by day and sort
+      const byDay = Object.fromEntries(DAYS.map(d=>[d, []]));
       classes.forEach(c=>byDay[c.day].push(c));
-      days.forEach(d=>byDay[d].sort((a,b)=>timeToMinutes(a.start)-timeToMinutes(b.start)));
-      let body = days.map(d=>{
-        if(byDay[d].length===0) return `${d}: No Classes`;
-        return `${d}: ` + byDay[d].map(c=>`${c.start}-${c.end} ${c.subject}`).join(', ');
+      DAYS.forEach(d=>byDay[d].sort((a,b)=>timeToMinutes(a.start)-timeToMinutes(b.start)));
+
+      const body = DAYS.map(d=>{
+        if(byDay[d].length===0) return `${d}: No classes`;
+        const lines = byDay[d].map(c=>{
+          const room = c.room ? ` (Rm ${c.room})` : '';
+          return `- ${to12Hour(c.start)}–${to12Hour(c.end)} ${c.subject}${room}`;
+        }).join('\n');
+        return `${d}:\n${lines}`;
       }).join('\n');
+
       return `${header}${body}\n\n- ${s.smsSender}`;
     }
 
@@ -398,7 +634,10 @@
       const list = store.read(KEYS.subs, []);
       const host = $('#subs-list');
       host.innerHTML='';
-      if(list.length===0){ host.innerHTML = '<p class="text-sm text-slate-500">No subscribers yet.</p>'; return; }
+      if(list.length===0){
+        host.innerHTML = '<p class="text-sm text-slate-500">No subscribers yet.</p>';
+        return;
+      }
       list.forEach((sub, i)=>{
         const row = document.createElement('div');
         row.className = 'flex items-center justify-between border rounded-xl px-3 py-2';
@@ -415,13 +654,14 @@
       }));
     }
 
-    // ---------- Tab logic ----------
+    // ---------- Tabs ----------
     function activateTab(name){
       $$('.tab-panel').forEach(p=>p.classList.toggle('hidden', p.getAttribute('data-panel')!==name));
       $$('.tab-btn').forEach(b=>{
         const active = b.getAttribute('data-tab')===name;
         b.classList.toggle('bg-green-900', active);
         b.classList.toggle('text-white', active);
+        b.setAttribute('aria-selected', active ? 'true' : 'false');
       });
       $('#mobileNav').classList.add('hidden');
       localStorage.setItem('sm.activeTab', name);
@@ -429,16 +669,25 @@
 
     // ---------- Loaders ----------
     function loadStudentView(){
-      const filter = { grade: $('#sv-grade').value, strand: $('#sv-strand').value, section: $('#sv-section').value };
+      const filter = {
+        grade: $('#sv-grade').value,
+        strand: $('#sv-strand').value.trim().toUpperCase(),
+        section: $('#sv-section').value.trim().toUpperCase()
+      };
       const list = fetchClasses(filter);
       renderGrid($('#timetable'), list);
     }
 
     function loadTeacherView(){
-      const filter = { grade: $('#tc-grade').value, strand: $('#tc-strand').value, section: $('#tc-section').value };
-      const list = fetchClasses(filter);
+      const filter = normalizeCohort({
+        grade: $('#tc-grade').value,
+        strand: $('#tc-strand').value,
+        section: $('#tc-section').value
+      });
+      const list = fetchClassesWithIndex(filter);
       renderTeacherTable($('#teacher-table'), list, filter);
     }
+
 
     // ---------- Events ----------
     window.addEventListener('DOMContentLoaded', () => {
@@ -452,19 +701,30 @@
 
       // student view
       $('#sv-load').addEventListener('click', loadStudentView);
-      $('#export-sms').addEventListener('click', ()=>{
-        const filter = { grade: $('#sv-grade').value, strand: $('#sv-strand').value, section: $('#sv-section').value };
-        const txt = classesToSms(filter, fetchClasses(filter));
+      $('#export-sms').addEventListener('click', ()=>{ 
+        const filter = {
+          grade: $('#sv-grade').value,
+          strand: $('#sv-strand').value.trim().toUpperCase(),
+          section: $('#sv-section').value.trim().toUpperCase()
+        };
+        const list = fetchClasses(filter);
+        const txt = classesToSms(filter, list);
         navigator.clipboard?.writeText(txt);
         alert('SMS text copied to clipboard!');
       });
 
       $('#sv-sub').addEventListener('click', ()=>{
         const phone = $('#sv-phone').value.trim();
-        const filter = { grade: $('#sv-grade').value, strand: $('#sv-strand').value.trim().toUpperCase(), section: $('#sv-section').value.trim().toUpperCase() };
+        const filter = {
+          grade: $('#sv-grade').value,
+          strand: $('#sv-strand').value.trim().toUpperCase(),
+          section: $('#sv-section').value.trim().toUpperCase()
+        };
         if(!/^0\d{10}$/.test(phone)) { $('#sv-sub-msg').textContent = 'Enter a valid PH number (11 digits, starts with 0).'; return; }
         const subs = store.read(KEYS.subs, []);
-        if(subs.find(s=> s.phone===phone && cohortKey(s)===cohortKey(filter))){ $('#sv-sub-msg').textContent='Already subscribed for this cohort.'; return; }
+        if(subs.find(s=> s.phone===phone && cohortKey(s)===cohortKey(filter))){
+          $('#sv-sub-msg').textContent='Already subscribed for this cohort.'; return;
+        }
         subs.push({ phone, ...filter });
         store.write(KEYS.subs, subs);
         $('#sv-sub-msg').textContent = 'Subscribed! You will receive weekly SMS (simulated in this demo).';
@@ -481,8 +741,8 @@
         entry.grade = String(entry.grade);
         entry.strand = entry.strand.trim().toUpperCase();
         entry.section = entry.section.trim().toUpperCase();
-        entry.day = entry.day;
-        // validation
+        entry.day = entry.day.trim().slice(0,3); // normalize day
+
         if(timeToMinutes(entry.end) <= timeToMinutes(entry.start)){
           $('#conflict-msg').textContent = 'End time must be after start time.';
           $('#conflict-msg').className = 'text-sm mt-1 text-rose-600';
@@ -499,17 +759,28 @@
         $('#conflict-msg').className = 'text-sm mt-1 text-emerald-600';
         e.target.reset();
         loadTeacherView();
+        // keep on Teacher tab
       });
 
       // SMS center
       renderSubsList();
       $('#sms-generate').addEventListener('click', ()=>{
-        const filter = { grade: $('#sms-grade').value, strand: $('#sms-strand').value, section: $('#sms-section').value };
-        $('#sms-preview').value = classesToSms(filter, fetchClasses(filter));
+        const filter = {
+          grade: $('#sms-grade').value,
+          strand: $('#sms-strand').value.trim().toUpperCase(), 
+          section: $('#sms-section').value.trim().toUpperCase() 
+        };
+        const all = store.read(KEYS.classes, []);
+        const filtered = all.filter(c =>
+          c.grade === filter.grade &&
+          c.strand === filter.strand &&
+          c.section === filter.section
+        );
+        $('#sms-preview').value = classesToSms(filter, filtered);
       });
       $('#sms-send').addEventListener('click', ()=>{
-        // Simulation only
         $('#sms-status').textContent = 'SMS sent (simulation). In production, connect to an SMS gateway API.';
+        setTimeout(()=>$('#sms-status').textContent='', 3000);
       });
 
       // settings
@@ -517,7 +788,10 @@
       $('#school-name').value = s.schoolName || '';
       $('#sms-sender').value = s.smsSender || 'SchedMaster';
       $('#save-settings').addEventListener('click', ()=>{
-        store.write(KEYS.settings, { schoolName: $('#school-name').value.trim(), smsSender: $('#sms-sender').value.trim() || 'SchedMaster' });
+        store.write(KEYS.settings, {
+          schoolName: $('#school-name').value.trim(),
+          smsSender: $('#sms-sender').value.trim() || 'SchedMaster'
+        });
         alert('Settings saved.');
       });
 
@@ -531,23 +805,24 @@
         ];
         store.write(KEYS.classes, demo);
         alert('Demo classes seeded. Go to Student View or Teacher Console to see them.');
+        loadStudentView();
+        loadTeacherView();
       });
 
       $('#clear-data').addEventListener('click', ()=>{
-        if(confirm('Clear all demo data?')){
+        if (confirm('Clear all demo data?')) {
           store.write(KEYS.classes, []);
-          store.write(KEYS.subs, []);
-          // keep settings
-          loadStudentView();
-          loadTeacherView();
+          store.write(KEYS.subs, []); 
+          store.write(KEYS.settings, {}); 
+          alert('All data cleared.');
           renderSubsList();
-          alert('All classes & subscribers cleared.');
+          loadTeacherView();
+          loadStudentView();
         }
       });
 
-      // initial renders
-      loadStudentView();
-      loadTeacherView();
+      // Initial renders
+      loadStudentView(); // populate timetable immediately
     });
   </script>
 </body>
