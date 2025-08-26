@@ -4,28 +4,60 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SchedMaster — Web & SMS-Based Class Scheduling System</title>
+  <!-- ================== TAILWIND CSS ================== -->
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ================== CSS VARIABLES ================== */
     :root { --bg: 248 249 251; --card: 255 255 255; --ink: 15 23 42; }
     html, body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"; }
     .glass { backdrop-filter: blur(8px); background: rgba(255,255,255,0.65); }
     .scrollbar::-webkit-scrollbar { height: 8px; width: 8px; }
     .scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+
+    /* ================== SUBJECT BLOCK STYLES ================== */
     /* Ensure subject blocks are above grid lines */
     .subject-block {
-    position: absolute;
-    z-index: 10; /* on top of grid lines */
-    text-align: center;
-    margin: 2px 0;  /* small vertical gap */
-    padding: 4px 6px; /* more padding for easier reading */
-    border-radius: 1rem; /* make it rounder */
-    font-size: 0.875rem; /* slightly bigger */
-  }
+      position: absolute;
+      z-index: 10; /* on top of grid lines */
+      text-align: center;
+      margin: 2px 0;  /* small vertical gap */
+      padding: 4px 6px; /* more padding for easier reading */
+      border-radius: 1rem; /* make it rounder */
+      font-size: 0.875rem; /* slightly bigger */
+    }
 
+    /* ================== MEDIA QUERIES ================== */
+    /* Portrait mode (width < height) */
+    @media (orientation: portrait) {
+      .hero-title {
+        font-size: 1.5rem; /* smaller than desktop */
+        text-align: center;
+      }
+      .hero-desc {
+        font-size: 0.9rem;
+        text-align: center;
+        max-width: 90%;
+        margin: 0 auto;
+      }
+      .hero-tags {
+        justify-content: center;
+        gap: 0.5rem;
+      }
+    }
+
+    /* Hide tabs in portrait mode */
+    @media (orientation: portrait) {
+      nav.sm\\:flex {  /* Tailwind escapes ":" with "\\" */
+        display: none;
+      }
+      #menuBtn {
+        display: block;
+      }
+    }
 
     /* Keep small padding so grid lines are visible around the block */
     [data-col] {
@@ -35,146 +67,139 @@
     }
 
     .day-separator {
-  border-right: 1px solid rgba(156,163,175,0.5); /* light gray */
-  position: relative;
-  height: 100%;
-}
+      border-right: none !important; /* disable thin line */
+    }
 
     /* Horizontal lines for each hour */
     .timetable-row {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
       border-bottom: 3px solid rgba(156,163,175,0.3); /* light gray line */
-}
+    }
 
     /* Vertical lines between days */
     [data-col]:not(:last-child) {
       border-right: 3px solid rgba(156,163,175,0.3); /* light gray */
-}
+    }
 
-/* --- Mobile Timetable improvements --- */
-@media (max-width: 768px) {
-  #timetable {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
+    /* --- Mobile Timetable improvements --- */
+    @media (max-width: 768px) {
+      #timetable {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
 
-  /* Grid min width so days don’t squash too much */
-  #timetable > div {
-    min-width: 550px; /* 5 days + time column */
-  }
+      /* Grid min width so days don’t squash too much */
+      #timetable > div {
+        min-width: 550px; /* 5 days + time column */
+      }
 
-  /* Slightly smaller blocks on phones */
-  .subject-block {
-    font-size: 0.75rem; /* ~12px */
-    padding: 2px 4px;
-    border-radius: 0.75rem;
-  }
-}
+      /* Slightly smaller blocks on phones */
+      .subject-block {
+        font-size: 0.75rem; /* ~12px */
+        padding: 2px 4px;
+        border-radius: 0.75rem;
+      }
+    }
 
-/* --- Extra small devices (≤ 400px) --- */
-@media (max-width: 400px) {
-  html { font-size: 13px; }
-  header h1 { font-size: 0.85rem; }
-  .tab-panel { padding: 0.25rem; }
+    /* --- Extra small devices (≤ 400px) --- */
+    @media (max-width: 400px) {
+      html { font-size: 13px; }
+      header h1 { font-size: 0.85rem; }
+      .tab-panel { padding: 0.25rem; }
 
-  #timetable > div {
-    min-width: 480px; /* narrower timetable */
-  }
+      #timetable > div {
+        min-width: 480px; /* narrower timetable */
+      }
 
-  .subject-block {
-    font-size: 0.7rem;
-    padding: 2px;
-  }
-}
+      .subject-block {
+        font-size: 0.7rem;
+        padding: 2px;
+      }
+    }
 
-/* --- Mobile Nav tweaks --- */
-@media (max-width: 640px) {
-  #mobileBottomNav button {
-    font-size: 0.75rem;
-    padding: 0.4rem 0.25rem;
-  }
-}
+    /* --- Mobile Nav tweaks --- */
+    @media (max-width: 640px) {
+      #mobileBottomNav button {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.25rem;
+      }
+    }
 
     /* Mobile adjustments */
-  @media (max-width: 640px) {
-    input, select, textarea, button {
-      width: 100%;
+    @media (max-width: 640px) {
+      input, select, textarea, button {
+        width: 100%;
+      }
     }
-  }
-  html { font-size: 15px; }
-  body { font-size: 15px; }
+    html { font-size: 15px; }
+    body { font-size: 15px; }
 
-  header h1 { font-size: 1rem; }
-  .tab-panel { padding: 0.5rem; }
+    header h1 { font-size: 1rem; }
+    .tab-panel { padding: 0.5rem; }
 
-  input, select, textarea, button { font-size: 0.9rem; }
+    input, select, textarea, button { font-size: 0.9rem; }
 
-  /* Tables scroll horizontally */
-  #timetable, #teacher-table {
-    max-height: 640px;
-    overflow-y: auto;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
+    /* Tables scroll horizontally */
+    #timetable, #teacher-table {
+      max-height: 640px;
+      overflow-y: auto;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
 
-  #timetable div[data-col] {
-    position: relative;
-    min-height: 64px;
-  }
+    #timetable div[data-col] {
+      position: relative;
+      min-height: 64px;
+    }
 
-  
-  /* Mobile Bottom Nav */
-  #mobileBottomNav {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: rgba(255, 255, 255, 0.95);
-    border-top: 1px solid #16a34a;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: env(safe-area-inset-bottom, 0.5rem) 0;
-    z-index: 50;
-    box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
-  }
+    /* Mobile Bottom Nav */
+    #mobileBottomNav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      border-top: 1px solid #16a34a;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: env(safe-area-inset-bottom, 0.5rem) 0;
+      z-index: 50;
+      box-shadow: 0 -1px 5px rgba(0,0,0,0.1);
+    }
 
-  #mobileBottomNav button {
-    flex: 1;
-    text-align: center;
-    padding: 0.5rem 0.25rem;
-    font-size: 0.875rem;
-    background: none;
-    border: none;
-    color: #16a34a;
-    font-weight: 500;
-  }
+    #mobileBottomNav button {
+      flex: 1;
+      text-align: center;
+      padding: 0.5rem 0.25rem;
+      font-size: 0.875rem;
+      background: none;
+      border: none;
+      color: #16a34a;
+      font-weight: 500;
+    }
 
-  #mobileBottomNav button.active {
-    color: white;
-    background-color: #16a34a;
-    border-radius: 0.5rem;
-  }
+    #mobileBottomNav button.active {
+      color: white;
+      background-color: #16a34a;
+      border-radius: 0.5rem;
+    }
 
-/* Very small devices */
-@media (max-width: 375px) {
-  html { font-size: 13px; }
-  header h1 { font-size: 0.9rem; }
+    /* Very small devices */
+    @media (max-width: 375px) {
+      html { font-size: 13px; }
+      header h1 { font-size: 0.9rem; }
 
-#timetable div[data-col] div {
-  font-size: 0.7rem;
-  padding: 0.25rem;
-}
-
-}
-
-
-
+      #timetable div[data-col] div {
+        font-size: 0.7rem;
+        padding: 0.25rem;
+      }
+    }
   </style>
 </head>
 <body class="bg-green-50 text-green-800">
-  <!-- Header -->
+  <!-- ================== HEADER ================== -->
   <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
@@ -202,14 +227,19 @@
       </div>
     </div>
   </header>
-  <!-- Main -->
+  <!-- ================== MAIN ================== -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <!-- Hero -->
+    <!-- ================== HERO ================== -->
     <section class="mb-8">
-      <div class="rounded-3xl p-6 sm:p-8 bg-gradient-to-tr from-green-700 to-green-800 text-white shadow-lg">
-        <h2 class="text-2xl FEU:text-3xl font-semibold">Inclusive class scheduling for every student</h2>
-        <p class="mt-2 text-white/90 max-w-3xl">SchedMaster runs on the web and delivers weekly schedules via SMS for learners without internet access. Teachers create timetables; students check online or receive SMS updates automatically.</p>
-        <div class="mt-4 flex flex-wrap gap-2">
+      <div class="rounded-3xl p-6 sm:p-8 bg-gradient-to-tr from-green-700 to-green-800 text-white shadow-lg text-center sm:text-left hero-container">
+        <h2 class="text-2xl sm:text-3xl font-semibold hero-title">
+          Inclusive class scheduling for every student
+        </h2>
+        <p class="mt-2 text-white/90 max-w-full sm:max-w-3xl mx-auto sm:mx-0 hero-desc">
+          SchedMaster runs on the web and delivers weekly schedules via SMS for learners without internet access.
+          Teachers create timetables; students check online or receive SMS updates automatically.
+        </p>
+        <div class="mt-4 flex flex-col sm:flex-row flex-wrap gap-2 hero-tags justify-center sm:justify-start">
           <span class="px-3 py-1 rounded-full bg-white/20 text-sm">Web-based</span>
           <span class="px-3 py-1 rounded-full bg-white/20 text-sm">SMS delivery</span>
           <span class="px-3 py-1 rounded-full bg-white/20 text-sm">Conflict detection</span>
@@ -218,9 +248,9 @@
       </div>
     </section>
 
-    <!-- Tabs -->
+    <!-- ================== TABS ================== -->
     <section>
-      <!-- Student View -->
+      <!-- ================== STUDENT VIEW ================== -->
       <div data-panel="student" class="tab-panel">
         <div class="grid md:grid-cols-3 gap-6">
           <div class="md:col-span-1">
@@ -250,7 +280,7 @@
                 <input id="sv-phone" placeholder="e.g., 09XXXXXXXXX" class="w-full rounded-xl border-slate-300 focus:ring-2 focus:ring-green-500"/>
                 <button id="sv-sub" class="w-full rounded-xl bg-green-700 hover:bg-green-700 text-white px-4 py-2 font-medium">Subscribe via SMS</button>
                 <p id="sv-sub-msg" class="text-xs text-slate-600"></p>
-            </div>
+              </div>
             </div>
           </div>
           <div class="md:col-span-2">
@@ -267,7 +297,7 @@
         </div>
       </div>
 
-      <!-- Teacher Console -->
+      <!-- ================== TEACHER CONSOLE ================== -->
       <div data-panel="teacher" class="tab-panel hidden">
         <div class="grid lg:grid-cols-3 gap-6">
           <div class="lg:col-span-1">
@@ -349,7 +379,7 @@
         </div>
       </div>
 
-      <!-- SMS Center -->
+      <!-- ================== SMS CENTER ================== -->
       <div data-panel="sms" class="tab-panel hidden">
         <div class="grid md:grid-cols-2 gap-6">
           <div class="bg-white rounded-2xl shadow p-5">
@@ -380,7 +410,7 @@
         </div>
       </div>
 
-      <!-- Settings -->
+      <!-- ================== SETTINGS ================== -->
       <div data-panel="settings" class="tab-panel hidden">
         <div class="bg-white rounded-2xl shadow p-5">
           <h3 class="font-semibold text-lg">System settings</h3>
@@ -397,22 +427,22 @@
             <div>
               <h4 class="font-medium">Data management</h4>
               <div class="mt-2 flex flex-wrap gap-2">
-                <button id="seed-demo" class="rounded-xl border px-3 py-2 text-sm hover:bg-slate-50">Seed demo data</button>
                 <button id="clear-data" class="rounded-xl border px-3 py-2 text-sm hover:bg-rose-50 border-rose-200 text-rose-700">Clear all data</button>
               </div>
-              <p class="text-xs text-slate-500 mt-2">This demo uses LocalStorage. For production, connect to your database and an SMS gateway (e.g., telco or API provider).</p>
+              <p class="text-xs text-slate-500 mt-2">This demo uses LocalStorage. For production, connect to your database and an SMS gateway (API provider).</p>
             </div>
           </div>
         </div>
       </div>
-
     </section>
   </main>
 
+  <!-- ================== FOOTER ================== -->
   <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
     <p class="text-center text-sm text-slate-500">© <span id="year"></span> SchedMaster Demo — Web & SMS Scheduler</p>
   </footer>
 
+  <!-- ================== JAVASCRIPT ================== -->
   <script>
     // ---------- Utilities ----------
     const $ = (sel, ctx=document)=>ctx.querySelector(sel);
@@ -430,6 +460,7 @@
 
     const DAYS = ['Mon','Tue','Wed','Thu','Fri'];
 
+    // ---------- TIME FUNCTIONS ----------
     function to12Hour(timeStr) {
       let [h, m] = timeStr.split(":").map(Number);
       const ampm = h >= 12 ? "PM" : "AM";
@@ -439,6 +470,7 @@
     function overlap(aStart,aEnd,bStart,bEnd){ return Math.max(aStart,bStart) < Math.min(aEnd,bEnd); }
     function timeToMinutes(t){ const [h, m] = t.split(':').map(Number); return h*60+m; }
 
+    // ---------- COHORT FUNCTIONS ----------
     function cohortKey({grade, strand, section}){ return `${String(grade)}|${(strand||'').trim().toUpperCase()}|${(section||'').trim().toUpperCase()}`; }
 
     function fetchClasses(filter){
@@ -477,101 +509,115 @@
       return found || null;
     }
 
-    // ---------- Timetable Grid (Student) ----------
+    // ---------- TIMETABLE GRID (STUDENT) ----------
     function renderGrid(target, classes) {
-  const grid = document.createElement('div');
+      const grid = document.createElement('div');
 
-  grid.className = 'w-full overflow-x-auto min-w-[550px]';
+      grid.className = 'w-full overflow-x-auto min-w-[550px]';
 
-  grid.className = 'w-full overflow-x-auto';
-  
-  
-  grid.innerHTML = `
-    <!-- Header -->
-    <div class="grid grid-cols-6 text-sm font-semibold text-slate-600 min-w-[360px]">
-      <div></div>
-      ${DAYS.map(d => `<div class="p-1 text-center ${d !== 'Fri' ? 'day-separator' : ''}">${d}</div>`).join('')}
-    </div>
-
-    <!-- Hour rows -->
-    ${Array.from({ length: 10 }).map((_, i) => {
-      const hour = 7 + i;
-      return `
-        <div class="timetable-row min-h-[60px]">
-          <div class="p-1 text-xs text-slate-500">${to12Hour(hour + ":00")}</div>
-          ${DAYS.map(d => `<div class="p-0.5 relative" data-col="${d}" data-hour="${hour}"></div>`).join('')}
+      grid.innerHTML = `
+        <!-- Header -->
+        <div class="grid grid-cols-6 text-sm font-semibold text-slate-600 min-w-[360px]">
+          <div></div>
+          ${DAYS.map(d => `<div class="p-1 text-center ${d !== 'Fri' ? 'day-separator' : ''}">${d}</div>`).join('')}
         </div>
+
+        <!-- Hour rows -->
+        ${Array.from({ length: 10 }).map((_, i) => {
+          const hour = 7 + i;
+          return `
+            <div class="timetable-row min-h-[60px]">
+              <div class="p-1 text-xs text-slate-500">${to12Hour(hour + ":00")}</div>
+              ${DAYS.map(d => `<div class="p-0.5 relative" data-col="${d}" data-hour="${hour}"></div>`).join('')}
+            </div>
+          `;
+        }).join('')}
       `;
-    }).join('')}
-  `;
 
-  target.innerHTML = '';
-  target.appendChild(grid);
+      target.innerHTML = '';
+      target.appendChild(grid);
 
-  // Add classes
-  classes.forEach(c => {
-    const [startHour, startMin] = c.start.split(':').map(Number);
-    const [endHour, endMin] = c.end.split(':').map(Number);
-    const startCell = grid.querySelector(`[data-col='${c.day}'][data-hour='${startHour}']`);
-    if (!startCell) return;
+      // Add classes
+      classes.forEach(c => {
+        const [startHour, startMin] = c.start.split(':').map(Number);
+        const [endHour, endMin] = c.end.split(':').map(Number);
+        const startCell = grid.querySelector(`[data-col='${c.day}'][data-hour='${startHour}']`);
+        if (!startCell) return;
 
-    const cellHeight = 60;
-    const startOffset = (startMin / 60) * cellHeight;
-    const durationHours = (endHour + endMin/60) - (startHour + startMin/60);
-    const blockHeight = Math.max(cellHeight * 0.5, durationHours * cellHeight);
+        const cellHeight = 60;
+        const startOffset = (startMin / 60) * cellHeight;
+        const durationHours = (endHour + endMin/60) - (startHour + startMin/60);
+        const blockHeight = Math.max(cellHeight * 0.5, durationHours * cellHeight);
 
-    const subj = document.createElement('div');
-    subj.className = 'absolute left-1 right-1 top-0 bg-green-700 text-white rounded-3xl px-2 py-1.5 text-sm font-semibold text-center flex items-center justify-center shadow border border-green-800 hover:scale-110 hover:shadow-3xl transition-transform transition-shadow duration-300 ease-in-out cursor-pointer';
-    subj.style.top = `${startOffset}px`;
-    subj.style.height = `${blockHeight}px`;
-    subj.innerText = c.subject;
+        const subj = document.createElement('div');
+        subj.className = `
+          absolute left-1 right-1 
+          bg-green-700 text-white 
+          rounded-3xl text-sm font-semibold 
+          flex items-center justify-center text-center
+          shadow border border-green-800 
+          transition-transform transition-shadow duration-300 ease-in-out 
+          cursor-pointer
+        `;
+        subj.style.top = `${startOffset}px`;
+        subj.style.height = `${blockHeight}px`;
+        subj.style.width = 'calc(100% - 0.5rem)'; // fill full width of the cell
+        subj.innerText = c.subject;
 
-    // Hover popup
-const popup = document.createElement('div');
-popup.className = 'absolute top-0 bg-white text-green-700 border border-green-800 rounded shadow p-2 text-xs hidden z-50 w-48';
-popup.innerHTML = `
-  <div class="font-bold">${c.subject}</div>
-  <div>Time: ${to12Hour(c.start)} – ${to12Hour(c.end)}</div>
-  <div>Room: ${c.room || 'N/A'}</div>
-  <div>Teacher: ${c.teacher || 'N/A'}</div>
-`;
+        // Hover effect directly on the entire block
+        subj.addEventListener('mouseenter', () => {
+          subj.style.transform = "scale(1.1)";
+          subj.style.boxShadow = "0 8px 20px rgba(0,0,0,0.25)";
+        });
+        subj.addEventListener('mouseleave', () => {
+          subj.style.transform = "scale(1)";
+          subj.style.boxShadow = "0 2px 6px rgba(0,0,0,0.15)";
+        });
 
-// default → show popup on the right
-popup.style.left = "100%";
-popup.style.marginLeft = "0.25rem";
+        // Hover popup
+        const popup = document.createElement('div');
+        popup.className = 'absolute top-0 bg-white text-green-700 border border-green-800 rounded shadow p-2 text-sm hidden z-50 w-48';
+        popup.innerHTML = `
+          <div class="font-bold">${c.subject}</div>
+          <div>Time: ${to12Hour(c.start)} – ${to12Hour(c.end)}</div>
+          <div>Room: ${c.room || 'N/A'}</div>
+          <div>Teacher: ${c.teacher || 'N/A'}</div>
+        `;
 
-// if Thursday or Friday → flip popup to the left
-if (c.day === "Thu" || c.day === "Fri") {
-  popup.style.left = "auto";
-  popup.style.right = "100%";
-  popup.style.marginLeft = "0";
-  popup.style.marginRight = "0.25rem";
-}
+        // default → show popup on the right
+        popup.style.left = "100%";
+        popup.style.marginLeft = "0.25rem";
 
-subj.addEventListener('mouseenter', () => popup.classList.remove('hidden'));
-subj.addEventListener('mouseleave', () => popup.classList.add('hidden'));
+        // if Thursday or Friday → flip popup to the left
+        if (c.day === "Thu" || c.day === "Fri") {
+          popup.style.left = "auto";
+          popup.style.right = "100%";
+          popup.style.marginLeft = "0";
+          popup.style.marginRight = "0.25rem";
+        }
 
-// ✅ Add mobile/tap support
-subj.addEventListener('click', (e) => {
-  e.stopPropagation();
-  popup.classList.toggle('hidden');
-});
+        // Hover for desktop
+        subj.addEventListener('mouseenter', () => popup.classList.remove('hidden'));
+        subj.addEventListener('mouseleave', () => popup.classList.add('hidden'));
 
-// ✅ Close popup if clicking anywhere else
-document.addEventListener('click', () => {
-  popup.classList.add('hidden');
-});
+        // Click/tap for mobile & desktop
+        subj.addEventListener('click', (e) => {
+          e.stopPropagation(); // prevents document click from closing immediately
+          popup.classList.toggle('hidden');
+        });
 
-startCell.appendChild(subj);
-startCell.appendChild(popup);
+        // Keep popup open if tapping inside it
+        popup.addEventListener('click', (e) => e.stopPropagation());
 
+        // Close popup if clicking anywhere else
+        document.addEventListener('click', () => popup.classList.add('hidden'));
 
-  });
-}
+        startCell.appendChild(subj);
+        startCell.appendChild(popup);
+      });
+    }
 
-
-
-    // ---------- Teacher Table ----------
+    // ---------- TEACHER TABLE ----------
     function renderTeacherTable(target, listWithIndex, filter){
       const rows = listWithIndex
         .slice()
@@ -644,6 +690,7 @@ startCell.appendChild(popup);
       return `${header}${body}\n\n- ${s.smsSender}`;
     }
 
+    // ---------- SUBSCRIBERS LIST ----------
     function renderSubsList(){
       const list = store.read(KEYS.subs, []);
       const host = $('#subs-list');
@@ -668,7 +715,7 @@ startCell.appendChild(popup);
       }));
     }
 
-    // ---------- Tabs ----------
+    // ---------- TABS ----------
     function activateTab(name){
       $$('.tab-panel').forEach(p=>p.classList.toggle('hidden', p.getAttribute('data-panel')!==name));
       $$('.tab-btn').forEach(b=>{
@@ -681,7 +728,7 @@ startCell.appendChild(popup);
       localStorage.setItem('sm.activeTab', name);
     }
 
-    // ---------- Loaders ----------
+    // ---------- LOADERS ----------
     function loadStudentView(){
       const filter = {
         grade: $('#sv-grade').value,
@@ -702,8 +749,7 @@ startCell.appendChild(popup);
       renderTeacherTable($('#teacher-table'), list, filter);
     }
 
-
-    // ---------- Events ----------
+    // ---------- EVENTS ----------
     window.addEventListener('DOMContentLoaded', () => {
       // menu
       $('#menuBtn').addEventListener('click', ()=> $('#mobileNav').classList.toggle('hidden'));
@@ -728,42 +774,41 @@ startCell.appendChild(popup);
       });
 
       // Subscribe via SMS
-    $('#sv-sub').addEventListener('click', ()=>{
-      const fname = $('#sv-fname').value.trim();
-      const lname = $('#sv-lname').value.trim();
-      const phone = $('#sv-phone').value.trim();
+      $('#sv-sub').addEventListener('click', ()=>{
+        const fname = $('#sv-fname').value.trim();
+        const lname = $('#sv-lname').value.trim();
+        const phone = $('#sv-phone').value.trim();
 
-      if(!fname || !lname || !phone){
-       $('#sv-sub-msg').innerText = "❌ Please fill in first name, last name, and phone number.";
-        return;
-      }
+        if(!fname || !lname || !phone){
+          $('#sv-sub-msg').innerText = "❌ Please fill in first name, last name, and phone number.";
+          return;
+        }
 
-      const list = store.read(KEYS.subs, []);
+        const list = store.read(KEYS.subs, []);
 
-      //  Prevent duplicate phone numbers
-      if(list.some(sub => sub.phone === phone)){
-        $('#sv-sub-msg').innerText = "⚠️ This number is already subscribed.";
-        return;
-      }
+        // Prevent duplicate phone numbers
+        if(list.some(sub => sub.phone === phone)){
+          $('#sv-sub-msg').innerText = "⚠️ This number is already subscribed.";
+          return;
+        }
 
-      const entry = {
-        fname,
-        lname,
-        phone,
-        grade: $('#sv-grade').value,
-        strand: $('#sv-strand').value.trim().toUpperCase(),
-        section: $('#sv-section').value.trim().toUpperCase()
-      };
-      list.push(entry);
-      store.write(KEYS.subs, list);
+        const entry = {
+          fname,
+          lname,
+          phone,
+          grade: $('#sv-grade').value,
+          strand: $('#sv-strand').value.trim().toUpperCase(),
+          section: $('#sv-section').value.trim().toUpperCase()
+        };
+        list.push(entry);
+        store.write(KEYS.subs, list);
 
-      $('#sv-sub-msg').innerText = "✅ Subscribed successfully!";
-      $('#sv-fname').value = "";
-      $('#sv-lname').value = "";
-      $('#sv-phone').value = "";
-      renderSubsList();
-    });
-
+        $('#sv-sub-msg').innerText = "✅ Subscribed successfully!";
+        $('#sv-fname').value = "";
+        $('#sv-lname').value = "";
+        $('#sv-phone').value = "";
+        renderSubsList();
+      });
 
       // teacher console
       $('#tc-load').addEventListener('click', loadTeacherView);
@@ -827,32 +872,6 @@ startCell.appendChild(popup);
           smsSender: $('#sms-sender').value.trim() || 'SchedMaster'
         });
         alert('Settings saved.');
-      });
-
-      $('#seed-demo').addEventListener('click', ()=>{
-        const demo = [
-          {grade:'11', strand:'STEM', section:'A', day:'Mon', start:'08:00', end:'09:30', subject:'Math', room:'201', teacher:'Mr. Cruz'},
-          {grade:'11', strand:'STEM', section:'A', day:'Mon', start:'09:30', end:'11:00', subject:'English', room:'105', teacher:'Ms. Reyes'},
-          {grade:'11', strand:'STEM', section:'A', day:'Thu', start:'10:00', end:'11:30', subject:'ICT', room:'Lab 2', teacher:'Mr. Lim'},
-          {grade:'11', strand:'STEM', section:'A', day:'Fri', start:'08:00', end:'09:30', subject:'Filipino', room:'103', teacher:'Ms. Dela Cruz'},
-          {grade:'11', strand:'ABM', section:'B', day:'Tue', start:'13:00', end:'14:30', subject:'Accounting', room:'302', teacher:'Mr. Santos'}
-        ];
-        store.write(KEYS.classes, demo);
-        alert('Demo classes seeded. Go to Student View or Teacher Console to see them.');
-        loadStudentView();
-        loadTeacherView();
-      });
-
-      $('#clear-data').addEventListener('click', ()=>{
-        if (confirm('Clear all demo data?')) {
-          store.write(KEYS.classes, []);
-          store.write(KEYS.subs, []); 
-          store.write(KEYS.settings, {}); 
-          alert('All data cleared.');
-          renderSubsList();
-          loadTeacherView();
-          loadStudentView();
-        }
       });
 
       // Initial renders
