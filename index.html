@@ -551,8 +551,20 @@ if (c.day === "Thu" || c.day === "Fri") {
 subj.addEventListener('mouseenter', () => popup.classList.remove('hidden'));
 subj.addEventListener('mouseleave', () => popup.classList.add('hidden'));
 
+// ✅ Add mobile/tap support
+subj.addEventListener('click', (e) => {
+  e.stopPropagation();
+  popup.classList.toggle('hidden');
+});
+
+// ✅ Close popup if clicking anywhere else
+document.addEventListener('click', () => {
+  popup.classList.add('hidden');
+});
+
 startCell.appendChild(subj);
 startCell.appendChild(popup);
+
 
   });
 }
